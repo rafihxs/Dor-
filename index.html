@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onde dói hoje, Gaby?</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1d2140, #080911 70%);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      margin: auto;
+      padding: 24px 18px 60px;
+      text-align: center;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #ffd6e8;
+      text-shadow: 0 0 20px rgba(255, 150, 210, 0.5);
+    }
+
+    p {
+      color: #d9dcff;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .btn {
+      border: none;
+      padding: 15px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8fc7, #8e7cff);
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 0 25px rgba(255, 143, 199, 0.45);
+      cursor: pointer;
+    }
+
+    .section {
+      display: none;
+      animation: fade 0.8s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .body-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 24px 16px;
+      margin-top: 24px;
+      box-shadow: 0 0 35px rgba(0,0,0,0.35);
+    }
+
+    .body-map {
+      position: relative;
+      width: 210px;
+      height: 430px;
+      margin: 20px auto;
+    }
+
+    .head, .chest, .belly, .left-arm, .right-arm, .left-leg, .right-leg {
+      position: absolute;
+      background: linear-gradient(135deg, #2a2f63, #45306b);
+      border: 2px solid rgba(255,255,255,0.25);
+      box-shadow: inset 0 0 18px rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .head {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      left: 69px;
+      top: 0;
+    }
+
+    .chest {
+      width: 120px;
+      height: 115px;
+      border-radius: 45px 45px 28px 28px;
+      left: 45px;
+      top: 82px;
+    }
+
+    .belly {
+      width: 105px;
+      height: 105px;
+      border-radius: 30px 30px 45px 45px;
+      left: 52px;
+      top: 190px;
+    }
+
+    .left-arm, .right-arm {
+      width: 38px;
+      height: 170px;
+      border-radius: 30px;
+      top: 95px;
+    }
+
+    .left-arm { left: 0; transform: rotate(10deg); }
+    .right-arm { right: 0; transform: rotate(-10deg); }
+
+    .left-leg, .right-leg {
+      width: 45px;
+      height: 140px;
+      border-radius: 25px;
+      top: 290px;
+    }
+
+    .left-leg { left: 55px; }
+    .right-leg { right: 55px; }
+
+    .body-map div:hover,
+    .active {
+      background: linear-gradient(135deg, #ff8fc7, #8e7cff);
+      transform: scale(1.04);
+      box-shadow: 0 0 25px rgba(255, 143, 199, 0.7);
+    }
+
+    .message-box {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.14);
+      min-height: 155px;
+    }
+
+    .message-box h2 {
+      color: #ffd6e8;
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+    }
+
+    .progress-area {
+      margin-top: 22px;
+      text-align: left;
+    }
+
+    .progress-area span {
+      font-size: 0.9rem;
+      color: #ffd6e8;
+    }
+
+    .progress {
+      width: 100%;
+      height: 15px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff8fc7, #8e7cff);
+      transition: 0.5s;
+    }
+
+    .final-card {
+      display: none;
+      margin-top: 26px;
+      background: linear-gradient(145deg, rgba(255,143,199,0.15), rgba(142,124,255,0.15));
+      padding: 25px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.18);
+      animation: fade 1s ease;
+    }
+
+    .final-card h2 {
+      color: #ffd6e8;
+      margin-bottom: 15px;
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(255, 182, 220, 0.35);
+      animation: float 7s linear infinite;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh); opacity: 0; }
+      20% { opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="container">
+
+    <section class="hero" id="hero">
+      <h1>Onde dói hoje, Gaby?</h1>
+      <p>
+        Você não precisa explicar tudo agora.  
+        Às vezes, só apontar onde dói já é suficiente.
+      </p>
+      <p>
+        Esse cantinho foi feito para te acolher, te lembrar que você é importante
+        e que um dia eu quero cuidar de todas as suas dores bem de pertinho.
+      </p>
+      <button class="btn" onclick="startSite()">Começar com carinho</button>
+    </section>
+
+    <section class="section" id="main">
+      <h1>Toque onde está doendo</h1>
+      <p>
+        Cada parte guarda uma mensagem minha para você.
+      </p>
+
+      <div class="body-card">
+        <div class="body-map">
+          <div class="head" onclick="showPain('cabeça', this)"></div>
+          <div class="chest" onclick="showPain('peito', this)"></div>
+          <div class="belly" onclick="showPain('barriga', this)"></div>
+          <div class="left-arm" onclick="showPain('ombros', this)"></div>
+          <div class="right-arm" onclick="showPain('mãos', this)"></div>
+          <div class="left-leg" onclick="showPain('pernas', this)"></div>
+          <div class="right-leg" onclick="showPain('cansaço', this)"></div>
+        </div>
+
+        <div class="message-box" id="messageBox">
+          <h2>Estou aqui com você ❤️</h2>
+          <p>
+            Clique em uma parte do corpo e eu vou te lembrar que nenhuma dor sua precisa ser ignorada.
+          </p>
+        </div>
+
+        <div class="progress-area">
+          <span>Carinho recebido</span>
+          <div class="progress">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="final-card" id="finalCard">
+        <h2>Um dia eu vou cuidar de você</h2>
+        <p>
+          Gaby, talvez hoje eu ainda não consiga estar aí para cuidar de cada dor sua,
+          segurar sua mão quando o peito apertar ou te abraçar quando o cansaço pesar.
+        </p>
+        <br>
+        <p>
+          Mas um dia eu quero estar do seu lado para cuidar de todas as suas dores.
+          Não como alguém que promete apagar tudo, mas como alguém que quer dividir
+          o peso com você.
+        </p>
+        <br>
+        <p>
+          Se sua cabeça cansar, eu quero ser paz.  
+          Se seu coração apertar, eu quero ser abraço.  
+          Se seu corpo estiver exausto, eu quero ser descanso.
+        </p>
+        <br>
+        <p>
+          Você não precisa ser forte o tempo inteiro.  
+          E quando esquecer o quanto é maravilhosa, eu vou estar ali para te lembrar.
+        </p>
+        <br>
+        <p><strong>Com carinho, Rafihx ❤️</strong></p>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const messages = {
+      cabeça: {
+        title: "Quando dói na cabeça...",
+        text: "Se sua mente está cheia, cansada ou confusa, respira um pouquinho. Você não precisa resolver tudo agora. Eu queria poder colocar paz nos seus pensamentos e te lembrar que você merece descanso."
+      },
+      peito: {
+        title: "Quando aperta no peito...",
+        text: "Se o peito está pesado, eu queria poder te abraçar forte e fazer você sentir que não está sozinha. Mesmo de longe, meu carinho está tentando chegar até você."
+      },
+      barriga: {
+        title: "Quando a ansiedade aparece...",
+        text: "Às vezes a dor vem pela barriga, pelo nervoso, pela pressão e por tudo que você guarda. Mas você não é fraca por sentir isso. Você é humana, preciosa e merece cuidado."
+      },
+      ombros: {
+        title: "Quando pesa nos ombros...",
+        text: "Você carrega muita coisa, Gaby. Trabalho, cansaço, sentimentos, pensamentos e ainda tenta continuar. Mas você não precisa carregar o mundo inteiro sozinha."
+      },
+      mãos: {
+        title: "Quando suas mãos cansam...",
+        text: "Essas mãos fazem muito, seguram muita coisa e talvez escondam mais dor do que mostram. Um dia eu quero segurar elas e dizer: descansa, eu estou aqui."
+      },
+      pernas: {
+        title: "Quando as pernas cansam...",
+        text: "Se o dia foi longo e seu corpo está pedindo pausa, escuta ele. Descansar também é uma forma de coragem. Você merece cuidado até nos detalhes."
+      },
+      cansaço: {
+        title: "Quando tudo em você cansa...",
+        text: "Tem dias que não é só uma parte que dói. É tudo. O corpo, a mente, o coração e a vontade. Mesmo nesses dias, você continua sendo incrível. E eu continuo escolhendo você."
+      }
+    };
+
+    let clicked = new Set();
+
+    function startSite() {
+      document.getElementById("hero").style.display = "none";
+      document.getElementById("main").style.display = "block";
+    }
+
+    function showPain(type, element) {
+      const box = document.getElementById("messageBox");
+
+      box.innerHTML = `
+        <h2>${messages[type].title}</h2>
+        <p>${messages[type].text}</p>
+      `;
+
+      element.classList.add("active");
+      clicked.add(type);
+
+      const progress = (clicked.size / 7) * 100;
+      document.getElementById("progressFill").style.width = progress + "%";
+
+      if (clicked.size === 7) {
+        document.getElementById("finalCard").style.display = "block";
+        createManyHearts();
+      }
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 18 + 12 + "px";
+      heart.style.animationDuration = Math.random() * 4 + 5 + "s";
+      document.getElementById("hearts").appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 8000);
+    }
+
+    function createManyHearts() {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(createHeart, i * 150);
+      }
+    }
+
+    setInterval(createHeart, 1200);
+  </script>
+</body>
+</html>
